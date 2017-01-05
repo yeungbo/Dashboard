@@ -1,7 +1,11 @@
 angular.module('starter.controllers', [])
+.constant('ApiEndpoint',{
+	url: 'http://192.168.1.46:8080/mfp'
+})
 
-.controller('DashCtrl', function($scope, $http, $q) {
+.controller('DashCtrl', function($scope, $http,  ApiEndpoint) {
 
+	console.log("ApiEndpoint : "+ApiEndpoint)
   //xxxx占比
     // xxxxxxService.getOrderConfCount().then(function(response) {
     //   console.log(response);
@@ -40,7 +44,7 @@ angular.module('starter.controllers', [])
     //     // }
     //   });
 
-	var $obj1;
+//	var $obj1;
 //	console.log("get data 1111");
 //	var xhr = new XMLHttpRequest();
 //	
@@ -61,9 +65,9 @@ angular.module('starter.controllers', [])
 //    	}
 //	}
 //	xhr.send();
-	var msgdata ="abc";
-	console.log(msgdata);
-	var defer = $q.defer();
+//	var msgdata ="abc";
+//	console.log(msgdata);
+//	var defer = $q.defer();
 //	$http.get('http://cap-sg-prd-4.integration.ibmcloud.com:16763/mfp/api/adapters/javaAdapter/resource/report', {
 //	    	headers: {"Content-Type": "application/x-www-form-urlencoded",
 //	        "Accept": "application/json",
@@ -74,14 +78,15 @@ angular.module('starter.controllers', [])
 	    	
 	 $http({
 		         method: 'GET',
-		         url: 'http://cap-sg-prd-4.integration.ibmcloud.com:16763/mfp/api/adapters/javaAdapter/resource/report'
+		         url: ApiEndpoint.url + '/api/adapters/javaAdapter/resource/report'
 		      }).success(function(data) {
 	    	
 	    	
-	    	defer.resolve(data);
+//	    	defer.resolve(data);
 	    	$obj1 = angular.toJson(data); 
 	    	$msgdata=angular.toJson(data); 
-	    	
+//	    	console.log("defer"+ JSON.stringify(defer) );
+	    	console.log($msgdata);
 //	      alert("success"+$msgdata);
 //	      alert("success"+data);
 //	      alert("success"+data.was);
@@ -148,13 +153,13 @@ angular.module('starter.controllers', [])
 	      
 	      return $msgdata;
 	    }).error(function(data, status, headers, config){	
-	    	defer.reject(data);
-	      alert("登录出错" + data + "  " + status);
+//	    	defer.reject(data);
+	    	console.log("error:" + data + "  " + status + " :: "+ headers +"  >> "+JSON.stringify(config));
 	    });
-	console.log(JSON.stringify(defer.promise));
-	
-	
-	console.log(defer.promise.db2);
+//	console.log(JSON.stringify(defer.promise));
+//	
+//	
+//	console.log(defer.promise.db2);
 //	alert(obj.db2);
 	
   //饼图
@@ -206,25 +211,99 @@ angular.module('starter.controllers', [])
 
 
 
-.controller('ChatsCtrl2', function($scope, $resource) {
+.controller('DashCtrl2', function($scope, $resource) {
 		console.log("hello1");
 	    var dataService = $resource('http://cap-sg-prd-4.integration.ibmcloud.com:16763/mfp/api/adapters/javaAdapter/resource/report');
 	    $scope.data = dataService.get();
 	    console.log($scope.data);
 	  })
 
-.controller('ChatsCtrl3', function($scope, Chats) {
-	$scope.login = function() {
+.controller('DashCtrl3', function($scope) {
+	
 		console.log("hello webservice 1111");
 		var xhr = new XMLHttpRequest();
 		xhr.open("GET", "http://cap-sg-prd-4.integration.ibmcloud.com:16763/mfp/api/adapters/javaAdapter/resource/report", true);
 		xhr.onreadystatechange = function() {
 	    	if (xhr.readyState == 4) {
 	      		alert(xhr.responseText);
+	      		
+	      		var data = JSON.parse(xhr.responseText);
+		    	
+		    	
+//		    	defer.resolve(data);
+		    	$obj1 = angular.toJson(data); 
+		    	$msgdata=angular.toJson(data); 
+//		    	console.log("defer"+ JSON.stringify(defer) );
+		    	console.log($msgdata);
+//		      alert("success"+$msgdata);
+//		      alert("success"+data);
+//		      alert("success"+data.was);
+		      
+		      var db2num = parseInt(data.db2);
+		      var wasnum = parseInt(data.was);
+		      var mongoDBnum = parseInt(data.mongoDB);
+		      
+		      var totalnum=db2num+wasnum+mongoDBnum;
+		      
+		      var db2share = (db2num/totalnum)*100;
+		      var wasshare = (wasnum/totalnum)*100;
+		      var mongodbshare = (mongoDBnum/totalnum)*100;
+//		      console.log("db2:"+db2share)
+//		      console.log("mongodbshare:"+mongodbshare)
+//		      console.log("was:"+wasshare)
+		      
+		      
+//		      alert("defer"+ JSON.stringify(defer) );
+		      
+		      ///////////////////////////
+		      //饼图
+		      $scope.chartPieConfig = {
+
+		       chart: {
+		                 plotBackgroundColor: null,
+		                 plotBorderWidth: null,
+		                 plotShadow: false
+		             },
+		             title: {
+		                 text: 'Browser resource usage at a specific environment, 2016'
+		             },
+		             tooltip: {
+		              pointFormat: '{series.name}bb: <b>{point.percentage:2.2f}%</b>'
+		             },
+		             plotOptions: {
+		                 pie: {
+		                     allowPointSelect: true,
+		                     cursor: 'pointer',
+		                     dataLabels: {
+		                         enabled: true,
+		                         color: '#000000',
+		                         connectorColor: '#000000',
+		                         format: '<b>{point.name}cc</b>: {point.percentage:1.1f} %'
+		                     }
+		                 }
+		             },
+		             series: [{
+		                 type: 'pie',
+		                 name: 'Resource share',
+		                 data: [
+		                     ['DB2',   db2share],
+		                     ['WAS',       wasshare],
+		                     {
+		                         name: 'MongoDB',
+		                         y: mongodbshare,
+		                         sliced: true,
+		                         selected: true
+		                     }
+		                 ]
+		             }]
+		      };
+		      /////////////////////////////
+		      
+		    
 	    	}
 		}
 		xhr.send();
-	};
+	
 })
 
 .controller('ChatsCtrl', function($scope, Chats) {
@@ -258,7 +337,7 @@ angular.module('starter.controllers', [])
   $scope.chat = Chats.get($stateParams.chatId);
 })
 
-.controller('AccountCtrl', function($scope,  $http, Accounts) {
+.controller('AccountCtrl', function($scope,  $http, Accounts, ApiEndpoint) {
 //	alert("AccountCtrl");
 	
 	var msgdata ="abc";
@@ -266,7 +345,8 @@ angular.module('starter.controllers', [])
 //	var defer = $q.defer();
 	 $http({
          method: 'GET',
-         url: 'http://cap-sg-prd-4.integration.ibmcloud.com:16763/mfp/api/adapters/javaAdapter/resource/vlanhealth'
+//         url: 'http://cap-sg-prd-4.integration.ibmcloud.com:16763/mfp/api/adapters/javaAdapter/resource/vlanhealth'
+         url: ApiEndpoint.url +'/api/adapters/javaAdapter/resource/vlanhealth'
       }).success(function(data) {
 	
 	
@@ -463,7 +543,7 @@ angular.module('starter.controllers', [])
   
   return $msgdata;
 }).error(function(data, status, headers, config){	
-	defer.reject(data);
+//	defer.reject(data);
   alert("登录出错" + data + "  " + status);
 });
 	///////////////////////////
