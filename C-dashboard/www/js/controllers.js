@@ -1,6 +1,7 @@
 angular.module('starter.controllers', [])
 .constant('ApiEndpoint',{
-	url: 'http://192.168.1.46:8080/mfp'
+//	url: 'http://192.168.1.46:8080/mfp'
+	url: 'http://9.186.59.123:8080/resource'
 })
 
 .controller('DashCtrl', function($scope, $http,  ApiEndpoint) {
@@ -78,7 +79,7 @@ angular.module('starter.controllers', [])
 	    	
 	 $http({
 		         method: 'GET',
-		         url: ApiEndpoint.url + '/api/adapters/javaAdapter/resource/report'
+		         url: ApiEndpoint.url + '/resource/report'
 		      }).success(function(data) {
 	    	
 	    	
@@ -307,24 +308,6 @@ angular.module('starter.controllers', [])
 })
 
 .controller('ChatsCtrl', function($scope, Chats) {
-  // With the new view caching in Ionic, Controllers are only called
-  // when they are recreated or on app start, instead of every page change.
-  // To listen for when this page is active (for example, to refresh data),
-  // listen for the $ionicView.enter event:
-  //
-  //$scope.$on('$ionicView.enter', function(e) {
-  //});
-
-	
-//		console.log("hello webservice 1111");
-//		var xhr = new XMLHttpRequest();
-//		xhr.open("GET", "http://cap-sg-prd-4.integration.ibmcloud.com:16763/mfp/api/adapters/javaAdapter/resource/report", true);
-//		xhr.onreadystatechange = function() {
-//	    	if (xhr.readyState == 4) {
-//	      		alert(xhr.responseText);
-//	    	}
-//		}
-//		xhr.send();
 
 	  	  
   $scope.chats = Chats.all();
@@ -334,7 +317,187 @@ angular.module('starter.controllers', [])
 })
 
 .controller('ChatDetailCtrl', function($scope, $stateParams, Chats) {
+	console.log("ChatDetailCtrl====>"+$stateParams.chatId);
   $scope.chat = Chats.get($stateParams.chatId);
+})
+
+
+.controller('VlansCtrl', function($scope, $http, Vlans, ApiEndpoint) {
+
+	console.log("start to query vlans");
+//	 $http({
+//        method: 'GET',
+////        url: 'http://cap-sg-prd-4.integration.ibmcloud.com:16763/mfp/api/adapters/javaAdapter/resource/vlanhealth'
+//        url: ApiEndpoint.url +'/api/adapters/javaAdapter/resource/vlanshealth?vlans=[{VLAN:1586},{VLAN:1449}]'
+//     }).success(function(data) {
+//   	  $msgdata=angular.toJson(data); 
+//   	  console.log("vlans:"+$msgdata);
+////   	  return $msgdata;
+//   	  var json = JSON.parse($msgdata); 
+//   	    
+//   	    var subnets = [];
+//   	    for(var key in json){  
+//   			console.log(key);  
+//   			console.log(json[key]); 
+//   			var jsonobj=json[key];
+//   			for (var k in jsonobj)
+//   				{
+//   				
+////   				console.log(k);  
+////   				console.log(jsonobj[k]); 
+//   				subnets = jsonobj["subnets"];
+//   				}
+//   	    } 
+//   	    
+//   	   
+//   	 var data = [];
+//     var id =0;
+//     for(var key in json){ 
+//  	   var jsonobj=json[key];
+//  	   console.log("vlan name:"+jsonobj["name"]);
+//  	   
+//  	   data.push({
+//        	id: id,
+//        	name: jsonobj["VLAN"],
+//        	lastText: "VLAN name: "+jsonobj["name"],
+//		    face: 'img/bo.png'  		                    	
+//        });
+//  	   
+//  	   id+=1;
+//  	   
+//  	   
+//     }
+//     
+//     console.log("dataaaaa:"+data);
+//     
+//   	 $scope.vlans = data;
+//   	 
+////   	 function () {
+////           // generate an array of random data
+////           var data = [];
+////           var id =0;
+////           for(var key in json){ 
+////        	   var jsonobj=json[key];
+////        	   console.log("vlan name:"+jsonobj["name"]);
+////        	   
+////        	   data.push({
+////              	id: id,
+////              	name: jsonobj["name"],
+////              	lastText: jsonobj["VLAN"],
+////    		    face: 'img/bo.png'  		                    	
+////              });
+////        	   
+////        	   id+=1;
+////        	   
+////        	   
+////           }
+////           
+////           console.log("dataaaaa:"+data);
+//////           for(var key in json["detail"]){  
+//////               data.push({
+//////             	name: key,
+//////                 y: parseFloat(json["detail"][key]),
+//////                 drilldown: null
+//////             });
+//////           }
+////           
+////           
+////           
+//////           data.push({
+//////           	name: "PM2.5",
+//////           	y: 100,
+//////           	drilldown: null		  		                    	
+//////           });
+//////           data.push({
+//////           	name: "PM10",
+//////           	y: 100,
+//////           	drilldown: null		  		                    	
+//////           });
+//////           data.push({
+//////           	name: "AQI",
+//////           	y: 100,
+//////           	drilldown: null		  		                    	
+//////           });
+//////           data.push({
+//////           	name: "二氧化硫",
+//////           	y: 100,
+//////           	drilldown: null		  		                    	
+//////           });
+//////           data.push({
+//////           	name: "一氧化碳",
+//////           	y: 100,
+//////           	drilldown: null		  		                    	
+//////           });
+//////           data.push({
+//////           	name: "一氧化氮",
+//////           	y: 100,
+//////           	drilldown: null		  		                    	
+//////           });
+//////           data.push({
+//////           	name: "臭氧",
+//////           	y: 100,
+//////           	drilldown: null		  		                    	
+//////           });
+//////           
+//////           var $jdata=angular.toJson(data); 
+//////           console.log(data);
+//////           console.log($jdata);
+////           return data;
+////       };
+////   	 
+//   	 
+//     }).error(function(data, status, headers, config){	
+////     	defer.reject(data);
+//       console.log("vlans data error" + data + "  " + status);
+//     });
+//
+//	
+//	console.log("vvvvvvvlan");
+////  Some fake testing dajta
+//	 $scope.vlans = [{
+//		    id: 0,
+//		    name: 'Bo',
+//		    lastText: 'Research Staff Member - DevOps',
+//		    face: 'img/bo.png'
+//		  }, {
+//		    id: 1,
+//		    name: 'Anca',
+//		    lastText: 'Tech Lead - AppDev/PaaS Bluemix',
+//		    face: 'img/anca.png'
+//		  }, {
+//		    id: 2,
+//		    name: 'Yichong',
+//		    lastText: 'Tech Lead - Operational Dashboard',
+//		    face: 'img/yichong.png'
+//		  }, {
+//		    id: 3,
+//		    name: 'Shubir',
+//		    lastText: 'Development Manager - DevOps',
+//		    face: 'img/shubir.png'
+//		  }];
+
+///////////////////////////////  
+	Vlans.all().then(function(result){
+		$scope.vlans = result;
+	}, function(){
+		console.log("service get error");
+	})
+	
+	////////////////////////////
+//  $scope.vlans = Vlans.all();
+  $scope.remove = function(vlan) {
+    Vlans.remove(vlan);
+  };
+})
+.controller('VlanDetailCtrl', function($scope, $stateParams, Vlans) {
+	console.log("VlanDetailCtrl====>"+$stateParams.vlanId);
+	Vlans.get($stateParams.vlanId).then(function(result){
+		$scope.vlan = result;
+	}, function(){
+		console.log("service vlans.get get error");
+	})
+	
+//  $scope.vlan = Vlans.get($stateParams.vlanId);
 })
 
 .controller('AccountCtrl', function($scope,  $http, Accounts, ApiEndpoint) {
@@ -342,11 +505,22 @@ angular.module('starter.controllers', [])
 	
 	var msgdata ="abc";
 	console.log(msgdata);
+	
+	var userAgent = navigator.userAgent;
+	  console.log(userAgent);
+	  var index = userAgent.indexOf("Android");
+	  
+	  console.log(index);
+	  if(index >= 0){
+	    var androidVersion = parseFloat(userAgent.slice(index+8)); 
+	    console.log('Version'+androidVersion);
+	  }
+	  
 //	var defer = $q.defer();
 	 $http({
          method: 'GET',
 //         url: 'http://cap-sg-prd-4.integration.ibmcloud.com:16763/mfp/api/adapters/javaAdapter/resource/vlanhealth'
-         url: ApiEndpoint.url +'/api/adapters/javaAdapter/resource/vlanhealth'
+         url: ApiEndpoint.url +'/resource/vlanshealth?vlans=[{VLAN:1586},{VLAN:882}]'
       }).success(function(data) {
 	
 	
@@ -363,13 +537,14 @@ angular.module('starter.controllers', [])
 //		console.log(key);  
 //		console.log(json[key]); 
 		var jsonobj=json[key];
-		for (var k in jsonobj)
-			{
-			
-//			console.log(k);  
-//			console.log(jsonobj[k]); 
-			subnets = jsonobj["subnets"];
-			}
+		subnets = jsonobj["subnets"];
+//		for (var k in jsonobj)
+//			{
+//			
+////			console.log(k);  
+////			console.log(jsonobj[k]); 
+//			subnets = jsonobj["subnets"];
+//			}
     } 
     
 //    for(var s in subnets){ 
@@ -544,7 +719,7 @@ angular.module('starter.controllers', [])
   return $msgdata;
 }).error(function(data, status, headers, config){	
 //	defer.reject(data);
-  alert("登录出错" + data + "  " + status);
+  console.log("登录出错" + data + "  " + status);
 });
 	///////////////////////////
 	   

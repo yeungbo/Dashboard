@@ -1,5 +1,10 @@
 angular.module('starter.services', [])
 
+.constant('ApiEndpoint',{
+//	url: 'http://192.168.1.46:8080/mfp'
+	url: 'http://9.186.59.123:8080/resource'
+})
+
 .factory('Chats', function() {
   // Might use a resource here that returns a JSON array
 
@@ -58,6 +63,147 @@ angular.module('starter.services', [])
     }
   };
 })
+
+
+.factory('Vlans', function($q, $http, ApiEndpoint) {
+  // Might use a resource here that returns a JSON array
+	
+		console.log("running in here:");
+	
+		 
+		 
+  return {
+    all: function() {
+    	var deferred = $q.defer();
+    	var promise=deferred.promise;
+    	
+    	$http.get(ApiEndpoint.url +'/resource/vlanshealth?vlans=[{VLAN:1586},{VLAN:1449}]').success(function(data,status,headers,config){
+            //执行deferred.resolve方法，将返回的data传入作为参数
+		   	  $msgdata=angular.toJson(data); 
+		   	  console.log("vlans:"+$msgdata);
+//		   	  return $msgdata;
+		   	  var json = JSON.parse($msgdata); 
+		   	    
+		   	 var vlans = [];
+		     var id =0;
+		     for(var key in json){ 
+		  	   var jsonobj=json[key];
+		  	   console.log("vlan name:"+jsonobj["name"]);
+		  	   
+		  	 vlans.push({
+		        	id: id,
+		        	name: jsonobj["VLAN"],
+		        	lastText: "VLAN name: "+jsonobj["name"],
+				    face: 'img/bo.png'  		                    	
+		        });
+		  	   
+		  	   id+=1;
+		  	   
+		  	   
+		     }
+		     
+		     console.log("vlansvlans:"+vlans);
+            deferred.resolve(vlans);
+          })
+          
+      return promise;
+    },
+    remove: function(vlan) {
+    	
+    	var deferred = $q.defer();
+    	var promise=deferred.promise;
+    	
+    	$http.get(ApiEndpoint.url +'/resource/vlanshealth?vlans=[{VLAN:1586},{VLAN:1449}]').success(function(data,status,headers,config){
+            //执行deferred.resolve方法，将返回的data传入作为参数
+		   	  $msgdata=angular.toJson(data); 
+		   	  console.log("vlans:"+$msgdata);
+//		   	  return $msgdata;
+		   	  var json = JSON.parse($msgdata); 
+		   	    
+		   	 var vlans = [];
+		     var id =0;
+		     for(var key in json){ 
+		  	   var jsonobj=json[key];
+		  	   console.log("vlan name:"+jsonobj["name"]);
+		  	   
+		  	 vlans.push({
+		        	id: id,
+		        	name: jsonobj["VLAN"],
+		        	lastText: "VLAN name: "+jsonobj["name"],
+				    face: 'img/bo.png'  		                    	
+		        });
+		  	   
+		  	   id+=1;
+		  	   
+		  	   
+		     }
+		     
+		     console.log("vlansvlans:"+vlans);
+            deferred.resolve(vlans);
+          });	
+    	
+          vlans = promise;
+          
+      vlans.splice(vlans.indexOf(vlan), 1);
+    },
+    get: function(vlanId) {
+    	
+    	
+    	var deferred = $q.defer();
+    	var promise=deferred.promise;
+    	
+    	$http.get(ApiEndpoint.url +'/resource/vlanshealth?vlans=[{VLAN:1586},{VLAN:1449}]').success(function(data,status,headers,config){
+            //执行deferred.resolve方法，将返回的data传入作为参数
+		   	  $msgdata=angular.toJson(data); 
+		   	  console.log("vlans:"+$msgdata);
+//		   	  return $msgdata;
+		   	  var json = JSON.parse($msgdata); 
+		   	    
+		   	 var vlans = [];
+		     var id =0;
+		     for(var key in json){ 
+		  	   var jsonobj=json[key];
+		  	   console.log("vlan name:"+jsonobj["name"]);
+		  	   
+		  	 vlans.push({
+		        	id: id,
+		        	name: jsonobj["VLAN"],
+		        	lastText: "VLAN name: "+jsonobj["name"],
+				    face: 'img/bo.png'  		                    	
+		        });
+		  	   
+		  	   id+=1;
+		  	   
+		  	   
+		     }
+		     
+		     console.log("vlansvlans:"+vlans);
+//            deferred.resolve(vlans);
+            
+            for (var i = 0; i < vlans.length; i++) {
+                if (vlans[i].id === parseInt(vlanId)) {
+                	
+                	 deferred.resolve(vlans[i]);
+//                  return vlans[i];
+                }
+              }
+            deferred.resolve(null);
+//              return null;
+              
+          });	
+    	
+    	return promise;
+    	
+//      for (var i = 0; i < vlans.length; i++) {
+//        if (vlans[i].id === parseInt(vlanId)) {
+//          return vlans[i];
+//        }
+//      }
+//      return null;
+    }
+  };
+})
+
 
 
 .factory('Accounts', function($http) {

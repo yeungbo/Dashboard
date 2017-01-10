@@ -68,6 +68,26 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','h
         }
       }
     })
+    
+  .state('tab.vlans', {
+      url: '/vlans',
+      views: {
+        'tab-vlans': {
+          templateUrl: 'templates/tab-vlans.html',
+          controller: 'VlansCtrl'
+        }
+      }
+    })
+    
+  .state('tab.vlan-detail', {
+      url: '/vlans/:vlanId',
+      views: {
+        'tab-vlans': {
+          templateUrl: 'templates/vlan-detail.html',
+          controller: 'VlanDetailCtrl'
+        }
+      }
+    })
 
   .state('tab.account', {
     url: '/account',
