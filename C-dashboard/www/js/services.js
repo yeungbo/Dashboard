@@ -5,6 +5,12 @@ angular.module('starter.services', [])
 	url: 'http://9.186.59.123:8080/resource'
 })
 
+.constant('VlanList',{
+//	url: 'http://192.168.1.46:8080/mfp'
+	sdt: '[{VLAN:1586},{VLAN:827},{VLAN:826},{VLAN:823},{VLAN:828},{VLAN:807},{VLAN:1226},{VLAN:1227},{VLAN:1228},{VLAN:1229}]',
+	pdt: '[{VLAN:1586},{VLAN:863},{VLAN:1244},{VLAN:1245},{VLAN:1259},{VLAN:929},{VLAN:1256},{VLAN:825},{VLAN:1171},{VLAN:1468},{VLAN:1439}]'
+})
+
 .factory('Chats', function() {
   // Might use a resource here that returns a JSON array
 
@@ -33,18 +39,6 @@ angular.module('starter.services', [])
 		    face: 'img/shubir.png'
 		  }];
 
-//  console.log("hello here222");
-//	
-//  console.log("hello webservice 123");
-//	var xhr = new XMLHttpRequest();
-//	xhr.open("GET", "http://cap-sg-prd-4.integration.ibmcloud.com:16763/mfp/api/adapters/javaAdapter/resource/report", true);
-//	xhr.onreadystatechange = function() {
-//  	if (xhr.readyState == 4) {
-//    		alert(xhr.responseText);
-//  	}
-//	}
-//	xhr.send();
-// 
 	
   return {
     all: function() {
@@ -65,7 +59,7 @@ angular.module('starter.services', [])
 })
 
 
-.factory('Vlans', function($q, $http, ApiEndpoint) {
+.factory('Vlans', function($q, $http, ApiEndpoint, VlanList) {
   // Might use a resource here that returns a JSON array
 	
 		console.log("running in here:");
@@ -77,7 +71,7 @@ angular.module('starter.services', [])
     	var deferred = $q.defer();
     	var promise=deferred.promise;
     	
-    	$http.get(ApiEndpoint.url +'/resource/vlanshealth?vlans=[{VLAN:1586},{VLAN:1449}]').success(function(data,status,headers,config){
+    	$http.get(ApiEndpoint.url +'/resource/vlanshealth?vlans='+VlanList.pdt).success(function(data,status,headers,config){
             //执行deferred.resolve方法，将返回的data传入作为参数
 		   	  $msgdata=angular.toJson(data); 
 		   	  console.log("vlans:"+$msgdata);
@@ -92,9 +86,19 @@ angular.module('starter.services', [])
 		  	   
 		  	 vlans.push({
 		        	id: id,
-		        	name: jsonobj["VLAN"],
-		        	lastText: "VLAN name: "+jsonobj["name"],
-				    face: 'img/bo.png'  		                    	
+		        	name: 'VLAN - '+jsonobj["VLAN"],
+		        	lastText: 'VLAN name: \"'+jsonobj["name"]+ "\"  [ Health: "+jsonobj["healthrate"]+"%  Available IP: "+(jsonobj["capacity"]-jsonobj["usage"]+" ]"),
+				    face: (function () {
+		                    // generate an array of random data
+		                    var signal = 'img/red.png';
+		                    var rate = parseFloat(jsonobj["healthrate"]);
+		                    if(rate>60)
+		                    	signal = 'img/green.png';
+		                    	else if(rate>30)
+				                    	signal = 'img/yellow.png';
+		                    
+		                    return signal;
+		                }() ) 		                    	
 		        });
 		  	   
 		  	   id+=1;
@@ -113,7 +117,7 @@ angular.module('starter.services', [])
     	var deferred = $q.defer();
     	var promise=deferred.promise;
     	
-    	$http.get(ApiEndpoint.url +'/resource/vlanshealth?vlans=[{VLAN:1586},{VLAN:1449}]').success(function(data,status,headers,config){
+    	$http.get(ApiEndpoint.url +'/resource/vlanshealth?vlans='+VlanList.pdt).success(function(data,status,headers,config){
             //执行deferred.resolve方法，将返回的data传入作为参数
 		   	  $msgdata=angular.toJson(data); 
 		   	  console.log("vlans:"+$msgdata);
@@ -130,7 +134,7 @@ angular.module('starter.services', [])
 		        	id: id,
 		        	name: jsonobj["VLAN"],
 		        	lastText: "VLAN name: "+jsonobj["name"],
-				    face: 'img/bo.png'  		                    	
+				    face: 'img/yellow.png'  		                    	
 		        });
 		  	   
 		  	   id+=1;
@@ -151,8 +155,8 @@ angular.module('starter.services', [])
     	
     	var deferred = $q.defer();
     	var promise=deferred.promise;
-    	
-    	$http.get(ApiEndpoint.url +'/resource/vlanshealth?vlans=[{VLAN:1586},{VLAN:1449}]').success(function(data,status,headers,config){
+
+    	$http.get(ApiEndpoint.url +'/resource/vlanshealth?vlans='+VlanList.pdt).success(function(data,status,headers,config){
             //执行deferred.resolve方法，将返回的data传入作为参数
 		   	  $msgdata=angular.toJson(data); 
 		   	  console.log("vlans:"+$msgdata);
@@ -167,9 +171,20 @@ angular.module('starter.services', [])
 		  	   
 		  	 vlans.push({
 		        	id: id,
-		        	name: jsonobj["VLAN"],
-		        	lastText: "VLAN name: "+jsonobj["name"],
-				    face: 'img/bo.png'  		                    	
+		        	name: 'VLAN - '+jsonobj["VLAN"],
+		        	lastText: 'VLAN name: \"'+jsonobj["name"]+ "\"  [ Health: "+jsonobj["healthrate"]+"%  Available IP: "+(jsonobj["capacity"]-jsonobj["usage"]+" ]"),
+		        	detailText: 'VLAN capacity: '+jsonobj["capacity"],
+				    face: (function () {
+		                    // generate an array of random data
+		                    var signal = 'img/red.png';
+		                    var rate = parseFloat(jsonobj["healthrate"]);
+		                    if(rate>60)
+		                    	signal = 'img/green.png';
+		                    	else if(rate>30)
+				                    	signal = 'img/yellow.png';
+		                    
+		                    return signal;
+		                }() ) 		                    	
 		        });
 		  	   
 		  	   id+=1;
@@ -194,12 +209,6 @@ angular.module('starter.services', [])
     	
     	return promise;
     	
-//      for (var i = 0; i < vlans.length; i++) {
-//        if (vlans[i].id === parseInt(vlanId)) {
-//          return vlans[i];
-//        }
-//      }
-//      return null;
     }
   };
 })
@@ -216,7 +225,7 @@ angular.module('starter.services', [])
 		    	
 		    	var accounts = $http({
 			         method: 'GET',
-			         url: 'http://cap-sg-prd-4.integration.ibmcloud.com:16763/mfp/api/adapters/javaAdapter/resource/report'
+			         url: ApiEndpoint.url +'/resource/report'
 			      }).success(function(data) {
 			    	  alert("account data:"+data);
 			    	  alert(JSON.stringify(data));
@@ -237,90 +246,4 @@ angular.module('starter.services', [])
 		    }
 		  };
 		  
-//	this.getAccounts  = function() {
-//	       var accounts = $http({
-//		         method: 'GET',
-//		         url: 'http://cap-sg-prd-4.integration.ibmcloud.com:16763/mfp/api/adapters/javaAdapter/resource/report'
-//		      }).success(function(data) {
-//		    	  alert("account data:"+data);
-//			         $log.log(data);
-//			         // removed your return data; it doesn't do anything, and this success is only added to log the result. if you don't need the log other than for debugging, get rid of this success handler too.   
-//			      });
-//	       return accounts;
-//	};
-//	return this.getAccounts;
-//	alert("accounts");
-//  // Some fake testing data
-//  var accounts = [{
-//    id: 0,
-//    name: 'Bo',
-//    lastText: 'You on your way?',
-//    face: 'img/ben.png'
-//  }, {
-//    id: 1,
-//    name: 'Max Lynx',
-//    lastText: 'Hey, it\'s me',
-//    face: 'img/max.png'
-//  }, {
-//    id: 2,
-//    name: 'Adam Bradleyson',
-//    lastText: 'I should buy a boat',
-//    face: 'img/adam.jpg'
-//  }, {
-//    id: 3,
-//    name: 'Perry Governor',
-//    lastText: 'Look at my mukluks!',
-//    face: 'img/perry.png'
-//  }, {
-//    id: 4,
-//    name: 'Mike Harrington',
-//    lastText: 'This is wicked good ice cream.',
-//    face: 'img/mike.png'
-//  }];
-//
-//  console.log("hello account");
-//	
-//  console.log("hello webservice 123");
-//	var xhr = new XMLHttpRequest();
-//	xhr.open("GET", "http://cap-sg-prd-4.integration.ibmcloud.com:16763/mfp/api/adapters/javaAdapter/resource/report", true);
-//	xhr.onreadystatechange = function() {
-//  	if (xhr.readyState == 4) {
-//  			var data=xhr.responseText
-//  			var jdata={"provisions":"453","db2":"94","vm":"888","was":"36","title":"Sol-DT Provision Statistic","mongoDB":"31"};
-//    		alert("data=>")
-////    		
-//  			alert(data);
-//    		var obj = JSON.parse(data); 
-////    		alert(obj);
-////    		alert(obj.was);
-////    		alert("jdata=>")
-////    		alert(jdata);
-//    		var obj2 = eval(jdata);
-////    		alert(obj2);
-////    		alert(obj2.db2);
-//  	}
-//	}
-//	xhr.send();
-//	
-//	accounts=xhr.responseText;
-//	alert("==>"+accounts);
-// 
-//	
-//  return {
-//    all: function() {
-//    	alert("response:"+accounts);
-//      return accounts;
-//    },
-//    remove: function(account) {
-//    	accounts.splice(accounts.indexOf(account), 1);
-//    },
-//    get: function(accountId) {
-//      for (var i = 0; i < accounts.length; i++) {
-//        if (accounts[i].id === parseInt(accountId)) {
-//          return accounts[i];
-//        }
-//      }
-//      return null;
-//    }
-//  };
 })
