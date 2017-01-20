@@ -1,12 +1,37 @@
 angular.module('starter.controllers', [])
 .constant('ApiEndpoint',{
-//	url: 'http://192.168.1.46:8080/mfp'
-	url: 'http://9.186.59.123:8080/resource'
+	url: 'http://192.168.1.46:8080/resource'
+//	url: 'http://9.186.59.123:8080/resource'
 })
 
-.controller('DashCtrl', function($scope, $http,  ApiEndpoint) {
+.constant('DbEndpoint',{
+	url: 'http://192.168.1.46:8080/db'
+//	url: 'http://9.186.59.123:8080/db'
+})
 
-	console.log("ApiEndpoint : "+ApiEndpoint)
+
+.controller('DashCtrl', function($scope, $http,  ApiEndpoint, DbEndpoint) {
+
+	console.log("ApiEndpoint : "+ApiEndpoint);
+	
+	var date = new Date();
+	
+	var timestamp = ""+date.getTime()
+	
+	var userAgent = navigator.userAgent;
+	  console.log(userAgent);
+	  var index = userAgent.indexOf("Android");
+	  
+	  console.log(index);
+//	  if(index >= 0){
+//	    var androidVersion = parseFloat(userAgent.slice(index+8)); 
+//	    console.log('Version'+androidVersion);
+//	  }
+	  
+	 $http.post(DbEndpoint.url, {"_id" : timestamp, "date": date, "client": userAgent}).then(function (res){
+         console.log("===============<response:"+ JSON.stringify(res.data));
+     });	
+	 
   //xxxx占比
     // xxxxxxService.getOrderConfCount().then(function(response) {
     //   console.log(response);
@@ -87,7 +112,7 @@ angular.module('starter.controllers', [])
 	                 plotShadow: false
 	             },
 	             title: {
-	                 text: 'Browser resource usage at a specific environment, 2016'
+	                 text: 'Browser resource usage of environment, 2017'
 	             },
 	             tooltip: {
 	              pointFormat: '{series.name}bb: <b>{point.percentage:2.2f}%</b>'
@@ -197,7 +222,7 @@ angular.module('starter.controllers', [])
 })
 
 
-.controller('VlansCtrl', function($scope, $http, Vlans, ApiEndpoint) {
+.controller('VlansCtrl', function($scope, $http, Vlans) {
 
 	console.log("start to query vlans");
 

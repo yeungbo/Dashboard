@@ -8,7 +8,23 @@
   <ion-content class="padding">
     <img ng-src="{{vlan.face}}" style="width: 64px; height: 64px">
     <p>
-      {{vlan.lastText}}
+      {{vlan.vlanname}}
+    </p>
+    <p>
+      {{vlan.vlanid}}
+    </p>
+    <p>
+      {{vlan.vlancapacity}}
+    </p>
+    <p>
+      {{vlan.vlanusage}}
+    </p>
+    <p>
+      {{vlan.vlanavailable}}
+    </p>
+    <p>Subnets:</p>
+    <p>
+      {{vlan.vlansubnets}}
     </p>
   </ion-content>
 </ion-view>

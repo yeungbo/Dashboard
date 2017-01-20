@@ -1,12 +1,11 @@
 angular.module('starter.services', [])
 
 .constant('ApiEndpoint',{
-//	url: 'http://192.168.1.46:8080/mfp'
-	url: 'http://9.186.59.123:8080/resource'
+	url: 'http://192.168.1.46:8080/resource'
+//	url: 'http://9.186.59.123:8080/resource'
 })
 
 .constant('VlanList',{
-//	url: 'http://192.168.1.46:8080/mfp'
 	sdt: '[{VLAN:1586},{VLAN:827},{VLAN:826},{VLAN:823},{VLAN:828},{VLAN:807},{VLAN:1226},{VLAN:1227},{VLAN:1228},{VLAN:1229}]',
 	pdt: '[{VLAN:1586},{VLAN:863},{VLAN:1244},{VLAN:1245},{VLAN:1259},{VLAN:929},{VLAN:1256},{VLAN:825},{VLAN:1171},{VLAN:1468},{VLAN:1439}]'
 })
@@ -19,25 +18,28 @@ angular.module('starter.services', [])
   // Some fake testing data
 	  var chats = [{
 		    id: 0,
-		    name: 'Bo',
-		    lastText: 'Research Staff Member - DevOps',
-		    face: 'img/bo.png'
-		  }, {
-		    id: 1,
 		    name: 'Anca',
 		    lastText: 'Tech Lead - AppDev/PaaS Bluemix',
 		    face: 'img/anca.png'
 		  }, {
-		    id: 2,
+		    id: 1,
 		    name: 'Yichong',
 		    lastText: 'Tech Lead - Operational Dashboard',
 		    face: 'img/yichong.png'
 		  }, {
-		    id: 3,
+		    id: 2,
 		    name: 'Shubir',
 		    lastText: 'Development Manager - DevOps',
 		    face: 'img/shubir.png'
-		  }];
+		  }, {
+			    id: 3,
+			    name: 'Bo',
+			    lastText: 'Research Staff Member - DevOps',
+			    face: 'img/bo.png'
+			  }
+		  
+		  
+		  ];
 
 	
   return {
@@ -70,8 +72,10 @@ angular.module('starter.services', [])
     all: function() {
     	var deferred = $q.defer();
     	var promise=deferred.promise;
-    	
-    	$http.get(ApiEndpoint.url +'/resource/vlanshealth?vlans='+VlanList.pdt).success(function(data,status,headers,config){
+    	console.log("send query");
+    	var url =encodeURI(ApiEndpoint.url +'/resource/vlanshealth?vlans='+VlanList.pdt); 
+    	console.log("url:"+url);
+    	$http.get(url).success(function(data,status,headers,config){
             //执行deferred.resolve方法，将返回的data传入作为参数
 		   	  $msgdata=angular.toJson(data); 
 		   	  console.log("vlans:"+$msgdata);
@@ -87,7 +91,7 @@ angular.module('starter.services', [])
 		  	 vlans.push({
 		        	id: id,
 		        	name: 'VLAN - '+jsonobj["VLAN"],
-		        	lastText: 'VLAN name: \"'+jsonobj["name"]+ "\"  [ Health: "+jsonobj["healthrate"]+"%  Available IP: "+(jsonobj["capacity"]-jsonobj["usage"]+" ]"),
+		        	lastText: "[ Health: "+jsonobj["healthrate"]+"%  Available IP: "+(jsonobj["capacity"]-jsonobj["usage"]+" ]"),
 				    face: (function () {
 		                    // generate an array of random data
 		                    var signal = 'img/red.png';
@@ -108,7 +112,10 @@ angular.module('starter.services', [])
 		     
 		     console.log("vlansvlans:"+vlans);
             deferred.resolve(vlans);
-          })
+          }).error(function(data, status, headers, config){	
+//        		defer.reject(data);
+        	  console.log("query error:" + data + "  " + status);
+        	});
           
       return promise;
     },
@@ -116,8 +123,8 @@ angular.module('starter.services', [])
     	
     	var deferred = $q.defer();
     	var promise=deferred.promise;
-    	
-    	$http.get(ApiEndpoint.url +'/resource/vlanshealth?vlans='+VlanList.pdt).success(function(data,status,headers,config){
+    	var url =encodeURI(ApiEndpoint.url +'/resource/vlanshealth?vlans='+VlanList.pdt); 
+    	$http.get(url).success(function(data,status,headers,config){
             //执行deferred.resolve方法，将返回的data传入作为参数
 		   	  $msgdata=angular.toJson(data); 
 		   	  console.log("vlans:"+$msgdata);
@@ -144,7 +151,10 @@ angular.module('starter.services', [])
 		     
 		     console.log("vlansvlans:"+vlans);
             deferred.resolve(vlans);
-          });	
+          }).error(function(data, status, headers, config){	
+//        		defer.reject(data);
+        	  console.log("query error:" + data + "  " + status);
+        	});	
     	
           vlans = promise;
           
@@ -155,8 +165,8 @@ angular.module('starter.services', [])
     	
     	var deferred = $q.defer();
     	var promise=deferred.promise;
-
-    	$http.get(ApiEndpoint.url +'/resource/vlanshealth?vlans='+VlanList.pdt).success(function(data,status,headers,config){
+    	var url =encodeURI(ApiEndpoint.url +'/resource/vlanshealth?vlans='+VlanList.pdt); 
+    	$http.get(url).success(function(data,status,headers,config){
             //执行deferred.resolve方法，将返回的data传入作为参数
 		   	  $msgdata=angular.toJson(data); 
 		   	  console.log("vlans:"+$msgdata);
@@ -169,11 +179,22 @@ angular.module('starter.services', [])
 		  	   var jsonobj=json[key];
 		  	   console.log("vlan name:"+jsonobj["name"]);
 		  	   
+		  	 var subnets = jsonobj["subnets"];
+		  	 var subnetstr ="";
+		  	 for(var s in subnets){ 
+		  		var subobj = subnets[s];
+		  		subnetstr+="["+subobj["subnet"]+"]  ";
+		  	 }
+		  	   
 		  	 vlans.push({
 		        	id: id,
 		        	name: 'VLAN - '+jsonobj["VLAN"],
-		        	lastText: 'VLAN name: \"'+jsonobj["name"]+ "\"  [ Health: "+jsonobj["healthrate"]+"%  Available IP: "+(jsonobj["capacity"]-jsonobj["usage"]+" ]"),
-		        	detailText: 'VLAN capacity: '+jsonobj["capacity"],
+		        	vlanname: 'Name: \"'+jsonobj["name"]+ "\"",
+		        	vlanid: 'ID: '+jsonobj["ID"],
+		        	vlancapacity: 'Capacity: '+jsonobj["capacity"],
+		        	vlanusage: 'Usage: '+jsonobj["usage"],
+		        	vlanavailable:  "Available IPs: "+(jsonobj["capacity"]-jsonobj["usage"]),
+		        	vlansubnets: subnetstr,
 				    face: (function () {
 		                    // generate an array of random data
 		                    var signal = 'img/red.png';
